@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import keyboard as key
-import os
+
 # Create an empty DataFrame
 quant = []
 length = []
