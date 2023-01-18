@@ -9,15 +9,15 @@ width = []
 height = []
 weight= []
 response = ["y","yes","yap","yeah",","]
-named_columns ={"Quantity": quant,
-                "Lenght": length,
-                "Width": width,
-                "Height": height}
-named_columns_w_weight = {"Quantity": quant,
-                          "Lenght": length,
-                          "Width": width,
-                          "Height": height,
-                          "Weight": weight,
+named_columns ={"Quantity [0]": quant,
+                "Length [1]": length,
+                "Width [2]": width,
+                "Height [3]": height}
+named_columns_w_weight = {"Quantity [0]": quant,
+                          "Length [1]": length,
+                          "Width [2]": width,
+                          "Height [3]": height,
+                          "Weight [4]": weight,
                           "----": []}
 df = pd.DataFrame(named_columns)
 df2 = pd.DataFrame(named_columns_w_weight)
@@ -45,12 +45,12 @@ while True:
         pass
     # Create new row as dictionarz and then convert it to dataframe which can be concatenate afterwards with existing dataframe
     if weight_inp not in response:
-        new_row = {"Quantity":quant,"Lenght":length,"Width":width,"Height": height}
+        new_row = {"Quantity [0]":quant,"Length [1]":length,"Width [2]":width,"Height [3]": height}
         new_row = pd.DataFrame([new_row])
         df = pd.concat([df, new_row], ignore_index=True)
         print(df)
     if weight_inp in response:
-        new_row_weight = {"Quantity":quant,"Lenght":length,"Width":width,"Height": height,"Weight": weight, "----": []}
+        new_row_weight = {"Quantity [0]":quant,"Length [1]":length,"Width [2]":width,"Height [3]": height,"Weight [4]": weight, "----": []}
         new_row_weight = pd.DataFrame([new_row_weight])
         df2 = pd.concat([df2, new_row_weight], ignore_index=True)
         print(df2)
@@ -60,24 +60,41 @@ while True:
     if  more.lower() not in response:
         break
 
+while True:
+    repair_it = input("Do you wish to repair any value? y/n: ")
+    if repair_it.lower() in response:
+        print("\n\n\n")
+        print(df2)
+        print("\n Now tell me dimensions which you wish to change")
+        first_dim = int(input("Tell me first dimension of the matrix - i.e. order num. of the row: "))
+        second_dim = int(input("Tell me second dimension of the matrix - i.e. order num. of the column: "))
+        value = float(input("What value you would like to write there: "))
+        df2.iat[first_dim,second_dim] = value
+        print("\n")
+        print(df2)
+    else:
+        break
+
 
 if weight_inp not in response:
-    df["Volume"] = df["Quantity"] * df["Lenght"] * df["Width"] * df["Height"] / 1000000
-    df["Volumetric weight (167/cbm)"] = df["Lenght"] * df["Width"] * df["Height"] * 167 / 1000000
-    columns_for_sum =["Quantity","Volume","Volumetric weight (167/cbm)"]
+    df["Volume"] = df["Quantity [0]"] * df["Length [1]"] * df["Width [2]"] * df["Height [3]"] / 1000000
+    df["Volumetric weight (167*cbm)"] = df["Length [1]"] * df["Width [2]"] * df["Height [3]"] * 167 / 1000000
+    columns_for_sum =["Quantity [0]","Volume","Volumetric weight (167*cbm)"]
 
     total = df.loc["TOTAL"] = df[columns_for_sum].sum(numeric_only= True, axis = 0, skipna = True)
     df.style.applymap(df_style,total)
     print(df)
 if weight_inp in response:
-    df2["Volume"] = df2["Quantity"] * df2["Lenght"] * df2["Width"] * df2["Height"] / 1000000
-    df2["Total Weight"] = df2["Quantity"]*df2["Weight"]
-    df2["Volumetric weight (167/cbm)"] = df2["Lenght"] * df2["Width"] * df2["Height"] * 167 / 1000000
+    df2["Volume"] = df2["Quantity [0]"] * df2["Length [1]"] * df2["Width [2]"] * df2["Height [3]"] / 1000000
+    df2["Total Weight"] = df2["Quantity [0]"]*df2["Weight [4]"]
+    df2["Volumetric weight (167*cbm)"] = df2["Volume"] * 167
 
-    columns_for_sum =["Quantity","Volume","Total Weight","Volumetric weight (167/cbm)"]
+    columns_for_sum =["Quantity [0]","Volume","Total Weight","Volumetric weight (167*cbm)"]
     total = df2.loc["TOTAL"] = df2[columns_for_sum].sum(numeric_only= True, axis = 0, skipna = True)
     df2.style.applymap(df_style,total)
     print(df2) 
+
+
 
 save_it = input("Do you wish to save this as .csv ? y/n: ")
 if save_it.lower() in response:
