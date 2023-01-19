@@ -113,11 +113,26 @@ if save_it_ex.lower() in response:
     print("file saved")
 
 save_it_2 = input("Do you wish to save it in excel organized for copying? y/n: ")
-if save_it_ex.lower() in response:
-    df["len_Wi_Hei"] = df.apply(lambda row: "{}x  {}x{}x{}".format(row["Quantity [0]"], row["Length [1]"],row["Width [2]"],row["Height [3]"]), axis=1)
-    df.to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
-
-
-
+if save_it_2.lower() in response:
+    """  quant_str = df["Quantity [0]"].astype(str) 
+    len_str = df["Length [1]"].astype(str)
+    wid_str = df["Width [2]"].astype(str) 
+    hei_str = df["Height [3]"].astype(str)
+    df_concat = pd.concat(quant_str + len_str + wid_str + hei_str,axis=1)"""
+    #df_concat["len_Wi_Hei"] = df_concat[quant_str] + "x  " + df_concat[len_str] + "x" + df_concat[wid_str] + "x" +  df_concat[hei_str]
     
+    # Converts all float numbers to int if there is no .0
+    for col in df.select_dtypes(include=["float"]):
+        if (df[col] % 1 == 0).all():
+            df[col] = df[col].astype(int)
+
+    #df["len_Wi_Hei"] = df[["Quantity [0]", "Length [1]","Width [2]" ,"Height [3]" ]].apply(lambda x: 'x'.join(x.astype(str)), axis=1)
+    df["len_Wi_Hei"] = df.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]}', axis=1)
+    print(df["len_Wi_Hei"] )
+    
+    df["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
+    print("file saved")
+
+
+
 print("That´s all folks, bye")
