@@ -112,4 +112,12 @@ if save_it_ex.lower() in response:
         df2.to_excel("vol.xlsx", index=False, sheet_name='Sheet1', header=True)
     print("file saved")
 
+save_it_2 = input("Do you wish to save it in excel organized for copying? y/n: ")
+if save_it_ex.lower() in response:
+    df["len_Wi_Hei"] = df.apply(lambda row: "{}x  {}x{}x{}".format(row["Quantity [0]"], row["Length [1]"],row["Width [2]"],row["Height [3]"]), axis=1)
+    df.to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
+
+
+
+    
 print("That´s all folks, bye")
