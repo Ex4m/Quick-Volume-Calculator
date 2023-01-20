@@ -77,6 +77,7 @@ while True:
 
 
 if weight_inp not in response:
+    df_orig = pd.DataFrame.copy(df)
     df["Volume"] = df["Quantity [0]"] * df["Length [1]"] * df["Width [2]"] * df["Height [3]"] / 1000000
     df["Volumetric weight (167*cbm)"] = df["Length [1]"] * df["Width [2]"] * df["Height [3]"] * 167 / 1000000
     columns_for_sum =["Quantity [0]","Volume","Volumetric weight (167*cbm)"]
@@ -114,23 +115,12 @@ if save_it_ex.lower() in response:
 
 save_it_2 = input("Do you wish to save it in excel organized for copying? y/n: ")
 if save_it_2.lower() in response:
-    """  quant_str = df["Quantity [0]"].astype(str) 
-    len_str = df["Length [1]"].astype(str)
-    wid_str = df["Width [2]"].astype(str) 
-    hei_str = df["Height [3]"].astype(str)
-    df_concat = pd.concat(quant_str + len_str + wid_str + hei_str,axis=1)"""
-    #df_concat["len_Wi_Hei"] = df_concat[quant_str] + "x  " + df_concat[len_str] + "x" + df_concat[wid_str] + "x" +  df_concat[hei_str]
+    df_orig = df_orig.applymap(lambda x: int(x) if type(x) == float and x == round(x) else x)
+    #new column and conversion to one line which is printable
+    df_orig["len_Wi_Hei"] = df_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm', axis=1)
+    print(df_orig["len_Wi_Hei"] )
     
-    # Converts all float numbers to int if there is no .0
-    for col in df.select_dtypes(include=["float"]):
-        if (df[col] % 1 == 0).all():
-            df[col] = df[col].astype(int)
-
-    #df["len_Wi_Hei"] = df[["Quantity [0]", "Length [1]","Width [2]" ,"Height [3]" ]].apply(lambda x: 'x'.join(x.astype(str)), axis=1)
-    df["len_Wi_Hei"] = df.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]}', axis=1)
-    print(df["len_Wi_Hei"] )
-    
-    df["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
+    df_orig["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
     print("file saved")
 
 
