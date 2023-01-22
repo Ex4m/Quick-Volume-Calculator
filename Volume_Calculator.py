@@ -60,21 +60,37 @@ while True:
     if  more.lower() not in response:
         break
 
-while True:
-    repair_it = input("Do you wish to repair any value? y/n: ")
+def Repair_table(used_df, repair_it):
     if repair_it.lower() in response:
         print("\n\n\n")
-        print(df2)
+        print(used_df)
         print("\n Now tell me dimensions which you wish to change")
         first_dim = int(input("Tell me first dimension of the matrix - i.e. order num. of the row: "))
         second_dim = int(input("Tell me second dimension of the matrix - i.e. order num. of the column: "))
         value = float(input("What value you would like to write there: "))
-        df2.iat[first_dim,second_dim] = value
+        used_df.iat[first_dim,second_dim] = value
         print("\n")
-        print(df2)
+        print(used_df)
+        return True
     else:
-        break
+        return False
 
+repair_it = input("Do you wish to repair any value? y/n: ")
+flag = False
+if weight_inp in response:
+    flag = Repair_table(df2,repair_it)
+elif weight_inp not in response:
+    flag = Repair_table(df,repair_it)
+
+
+ 
+while flag:
+    repair_it = input("Do you wish to repair any value? y/n: ")
+    if weight_inp in response:
+        flag = Repair_table(df2,repair_it)
+    elif weight_inp not in response:
+        flag = Repair_table(df,repair_it)
+      
 
 if weight_inp not in response:
     df_orig = pd.DataFrame.copy(df)
@@ -86,6 +102,7 @@ if weight_inp not in response:
     df.style.applymap(df_style,total)
     print(df)
 if weight_inp in response:
+    df2_orig = pd.DataFrame.copy(df2)
     df2["Volume"] = df2["Quantity [0]"] * df2["Length [1]"] * df2["Width [2]"] * df2["Height [3]"] / 1000000
     df2["Total Weight"] = df2["Quantity [0]"]*df2["Weight [4]"]
     df2["Volumetric weight (167*cbm)"] = df2["Volume"] * 167
@@ -94,7 +111,6 @@ if weight_inp in response:
     total = df2.loc["TOTAL"] = df2[columns_for_sum].sum(numeric_only= True, axis = 0, skipna = True)
     df2.style.applymap(df_style,total)
     print(df2) 
-
 
 
 save_it = input("Do you wish to save this as .csv ? y/n: ")
@@ -115,13 +131,19 @@ if save_it_ex.lower() in response:
 
 save_it_2 = input("Do you wish to save it in excel organized for copying? y/n: ")
 if save_it_2.lower() in response:
-    df_orig = df_orig.applymap(lambda x: int(x) if type(x) == float and x == round(x) else x)
-    #new column and conversion to one line which is printable
-    df_orig["len_Wi_Hei"] = df_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm', axis=1)
-    print(df_orig["len_Wi_Hei"] )
-    
-    df_orig["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
-    print("file saved")
+    if weight_inp not in response:
+        df_orig = df_orig.applymap(lambda x: int(x) if type(x) == float and x == round(x) else x)
+        #new column and conversion to one line which is printable
+        df_orig["len_Wi_Hei"] = df_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm', axis=1)
+        df_orig["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
+        print("file saved")
+    else:
+        df2_orig = df2_orig.applymap(lambda x: int(x) if type(x) == float and x == round(x) else x)
+        #new column and conversion to one line which is printable
+        df2_orig["len_Wi_Hei_Wei"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/', axis=1)
+        df2_orig["len_Wi_Hei_Wei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
+        print("file saved")
+        
 
 
 
