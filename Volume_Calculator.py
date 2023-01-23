@@ -127,7 +127,7 @@ if weight_inp in response:
 
 
 
-#Save the output to different formats 
+#Save the output to different formats
 save_it = input("Do you wish to save this as .csv ? y/n: ")
 if save_it.lower() in response:
     if weight_inp not in response:
