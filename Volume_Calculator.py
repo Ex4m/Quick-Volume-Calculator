@@ -22,28 +22,45 @@ named_columns_w_weight = {"Quantity [0]": quant,
 df = pd.DataFrame(named_columns)
 df2 = pd.DataFrame(named_columns_w_weight)
 
-def df_style (val):
-        return "font-weight: bold"
-
+def format_values(value):
+    try:
+        value = float(value)
+        return value
+    except ValueError:
+        try:
+            value = value.replace(",",".")
+            value = float(value)
+            return value
+        except ValueError:
+            while True:
+                try:
+                    value = input("Invalid input, Please enter a value, not a text: ")
+                    value = value.replace(",",".")
+                    value = float(value)
+                    return value
+                except:
+                    continue
 weight_inp = input("do you wish to include weight columns? y/n: ")        
 while True:
     # Get user input for dimensions
-    quant = input("Enter how many cartons: ")
-    length = input("Enter length: ")
-    width = input("Enter width: ")
-    height = input("Enter height: ")
+    quant = format_values(input("Enter how many cartons: "))
+    length = format_values(input("Enter length: "))
+    width = format_values(input("Enter width: "))
+    height = format_values(input("Enter height: "))
+            
     if weight_inp in response:
-        weight = input("Enter weight: ")
+        weight = format_values(input("Enter weight: "))
+        
     # Convert the dimensions to numeric values
-    quant = float(quant)
+    """quant = float(quant)
     length = float(length)
     width = float(width)
     height = float(height)
     try:
         weight = float(weight)
     except:
-        pass
-    # Create new row as dictionarz and then convert it to dataframe which can be concatenate afterwards with existing dataframe
+        pass"""
+    # Create new row as dictionary and then convert it to dataframe which can be concatenate afterwards with existing dataframe
     if weight_inp not in response:
         new_row = {"Quantity [0]":quant,"Length [1]":length,"Width [2]":width,"Height [3]": height}
         new_row = pd.DataFrame([new_row])
@@ -62,27 +79,26 @@ while True:
 
 def Repair_table(used_df, repair_it):
     if repair_it.lower() in response:
-        print("\n\n\n")
+        print("\n\n\n------------Actual REPAIRED table ----------")
         print(used_df)
         print("\n Now tell me dimensions which you wish to change")
         first_dim = int(input("Tell me first dimension of the matrix - i.e. order num. of the row: "))
         second_dim = int(input("Tell me second dimension of the matrix - i.e. order num. of the column: "))
-        value = float(input("What value you would like to write there: "))
+        value = format_values(input("What value you would like to write there: "))
         used_df.iat[first_dim,second_dim] = value
         print("\n")
         print(used_df)
         return True
     else:
         return False
-
+    
+    
 repair_it = input("Do you wish to repair any value? y/n: ")
 flag = False
 if weight_inp in response:
     flag = Repair_table(df2,repair_it)
 elif weight_inp not in response:
     flag = Repair_table(df,repair_it)
-
-
  
 while flag:
     repair_it = input("Do you wish to repair any value? y/n: ")
@@ -99,7 +115,6 @@ if weight_inp not in response:
     columns_for_sum =["Quantity [0]","Volume","Volumetric weight (167*cbm)"]
 
     total = df.loc["TOTAL"] = df[columns_for_sum].sum(numeric_only= True, axis = 0, skipna = True)
-    df.style.applymap(df_style,total)
     print(df)
 if weight_inp in response:
     df2_orig = pd.DataFrame.copy(df2)
@@ -109,7 +124,6 @@ if weight_inp in response:
 
     columns_for_sum =["Quantity [0]","Volume","Total Weight","Volumetric weight (167*cbm)"]
     total = df2.loc["TOTAL"] = df2[columns_for_sum].sum(numeric_only= True, axis = 0, skipna = True)
-    df2.style.applymap(df_style,total)
     print(df2) 
 
 
@@ -144,7 +158,5 @@ if save_it_2.lower() in response:
         df2_orig["len_Wi_Hei_Wei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
         print("file saved")
         
-
-
 
 print("That´s all folks, bye")
