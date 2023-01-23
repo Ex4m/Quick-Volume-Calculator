@@ -22,6 +22,8 @@ named_columns_w_weight = {"Quantity [0]": quant,
 df = pd.DataFrame(named_columns)
 df2 = pd.DataFrame(named_columns_w_weight)
 
+
+# Definition for customs func.
 def format_values(value):
     try:
         value = float(value)
@@ -40,6 +42,24 @@ def format_values(value):
                     return value
                 except:
                     continue
+
+def Repair_table(used_df, repair_it):
+    if repair_it.lower() in response:
+        print("\n\n\n------------Actual REPAIRED table ----------")
+        print(used_df)
+        print("\n Now tell me dimensions which you wish to change")
+        first_dim = int(input("Tell me first dimension of the matrix - i.e. order num. of the row: "))
+        second_dim = int(input("Tell me second dimension of the matrix - i.e. order num. of the column: "))
+        value = format_values(input("What value you would like to write there: "))
+        used_df.iat[first_dim,second_dim] = value
+        print("\n")
+        print(used_df)
+        return True
+    else:
+        return False
+    
+    
+    
 weight_inp = input("do you wish to include weight columns? y/n: ")        
 while True:
     # Get user input for dimensions
@@ -51,15 +71,7 @@ while True:
     if weight_inp in response:
         weight = format_values(input("Enter weight: "))
         
-    # Convert the dimensions to numeric values
-    """quant = float(quant)
-    length = float(length)
-    width = float(width)
-    height = float(height)
-    try:
-        weight = float(weight)
-    except:
-        pass"""
+
     # Create new row as dictionary and then convert it to dataframe which can be concatenate afterwards with existing dataframe
     if weight_inp not in response:
         new_row = {"Quantity [0]":quant,"Length [1]":length,"Width [2]":width,"Height [3]": height}
@@ -77,20 +89,7 @@ while True:
     if  more.lower() not in response:
         break
 
-def Repair_table(used_df, repair_it):
-    if repair_it.lower() in response:
-        print("\n\n\n------------Actual REPAIRED table ----------")
-        print(used_df)
-        print("\n Now tell me dimensions which you wish to change")
-        first_dim = int(input("Tell me first dimension of the matrix - i.e. order num. of the row: "))
-        second_dim = int(input("Tell me second dimension of the matrix - i.e. order num. of the column: "))
-        value = format_values(input("What value you would like to write there: "))
-        used_df.iat[first_dim,second_dim] = value
-        print("\n")
-        print(used_df)
-        return True
-    else:
-        return False
+
     
     
 repair_it = input("Do you wish to repair any value? y/n: ")
@@ -127,6 +126,8 @@ if weight_inp in response:
     print(df2) 
 
 
+
+#Save the output to different formats 
 save_it = input("Do you wish to save this as .csv ? y/n: ")
 if save_it.lower() in response:
     if weight_inp not in response:
