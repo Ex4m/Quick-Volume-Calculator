@@ -16,7 +16,13 @@ winsound.PlaySound("C:/Users/Exa/Downloads/Motley-Crue-Kickstart-my-Heart", wins
 ran_list = ["Fetching up the final numbers for you !","Go ahead -- hold your breath!","Please wait while the little elves draw your map",
             "My other loading screen is much faster.","Just count to 10","Creating time-loop inversion field",
             "Spinning the wheel of fortune...", "Please wait until the sloth starts moving.","Don't break your screen yet!",]    
-print.random                                                                                                                                                                                                                                                                                    
+pick_one = random.choice(ran_list)     
+ran_list.remove(pick_one)    
+pick_second = random.choice(ran_list)
+print(pick_one)
+time.sleep(5)
+print(pick_second)  
+time.sleep(5)                                                                                                                                                                                                                                                                    
 lg.print_logo(0.07)                                                                                                                                             
 
 print("\033[1mEx4m v. 1.3\033[0m\n\n")
