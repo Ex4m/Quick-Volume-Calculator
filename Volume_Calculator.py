@@ -1,29 +1,43 @@
-import numpy as np
 import pandas as pd
 import keyboard as key
 import time
 import logo as lg
 import winsound
 import random
+
+response = ["y","yes","yap","yeah",","]
 # TO DO LIST:
 # create logo in script - done
-# create audio on startup
+# create audio on startup - done
 # fce for unit prediction when export for copy
+# break on keypress - modifyied and done
 #
-#
-
-winsound.PlaySound("C:/Users/Exa/Downloads/Motley-Crue-Kickstart-my-Heart", winsound.SND_ASYNC)    
+clip_loc_2 = "C:/Users/Exa/Documents/GitHub/Quick-Volume-CalculatorMotley-Crue-Kickstart-my-Heart_logo"
+clip_loc = "C:/Users/Exa/Downloads/Motley-Crue-Kickstart-my-Heart_logo"
+ 
+#Starting loading screen
 ran_list = ["Fetching up the final numbers for you !","Go ahead -- hold your breath!","Please wait while the little elves draw your map",
             "My other loading screen is much faster.","Just count to 10","Creating time-loop inversion field",
             "Spinning the wheel of fortune...", "Please wait until the sloth starts moving.","Don't break your screen yet!",]    
 pick_one = random.choice(ran_list)     
 ran_list.remove(pick_one)    
 pick_second = random.choice(ran_list)
-print(pick_one)
-time.sleep(5)
-print(pick_second)  
-time.sleep(5)                                                                                                                                                                                                                                                                    
-lg.print_logo(0.07)                                                                                                                                             
+
+
+def start_seq(skip):
+    if not skip:
+        winsound.PlaySound(clip_loc, winsound.SND_ASYNC)   
+        print(pick_one)
+        time.sleep(5)
+        print(pick_second)  
+        time.sleep(5)                                                                                                                                                                                                                                                                    
+        lg.print_logo(0.07) 
+    elif skip:
+        print("So, my hard work on logo is not cool for you Ha? :) ")
+    
+skip = input("Do you want to skip the logo? y/n: ")      
+start_seq(skip)
+
 
 print("\033[1mEx4m v. 1.3\033[0m\n\n")
                                                                                                                                                      
@@ -38,7 +52,7 @@ length = []
 width = []
 height = []
 weight= []
-response = ["y","yes","yap","yeah",","]
+
 named_columns ={"Quantity [0]": quant,
                 "Length [1]": length,
                 "Width [2]": width,
@@ -146,8 +160,16 @@ if weight_inp not in response:
     total = df.loc["TOTAL"] = df[columns_for_sum].sum(numeric_only= True, axis = 0, skipna = True)
     print("\n\n\n--------------RESULT-----------------")
     print(df)
+    
+def add_packing(row):
+    if row["Length [1]"] >= 80 and row["Width [2]"] >= 60:
+        return "plt"
+    else:
+        return "ctn"
+    
 if weight_inp in response:
     df2_orig = pd.DataFrame.copy(df2)
+    df2["Packing"] = df2.apply(add_packing, axis=1)
     df2["Volume"] = df2["Quantity [0]"] * df2["Length [1]"] * df2["Width [2]"] * df2["Height [3]"] / 1000000
     df2["Total Weight"] = df2["Quantity [0]"]*df2["Weight [4]"]
     df2["Volumetric weight (167*cbm)"] = df2["Volume"] * 167
@@ -166,7 +188,7 @@ if save_it.lower() in response:
         df.to_csv("vol.csv",index = False)
     else:
         df2.to_csv("vol.csv",index = False)
-    print("file saved")
+    print("file saved as vol.xlsx")
 
 save_it_ex = input("and do you wish to save it as excel file ? y/n: ") # musí být nainstalovaný pip install openpyxl
 if save_it_ex.lower() in response:
@@ -174,7 +196,7 @@ if save_it_ex.lower() in response:
         df.to_excel("vol.xlsx", index=False, sheet_name='Sheet1', header=True)
     else:
         df2.to_excel("vol.xlsx", index=False, sheet_name='Sheet1', header=True)
-    print("file saved")
+    print("file saved as vol.xlsx")
 
 save_it_2 = input("Do you wish to save it in excel organized for copying? y/n: ")
 if save_it_2.lower() in response:
@@ -183,13 +205,14 @@ if save_it_2.lower() in response:
         #new column and conversion to one line which is printable
         df_orig["len_Wi_Hei"] = df_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm', axis=1)
         df_orig["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
-        print("file saved")
+        print("file saved as Vol2.xlsx")
     else:
         df2_orig = df2_orig.applymap(lambda x: int(x) if type(x) == float and x == round(x) else x)
+        #unit = df2.applymap(lambda x: "ctn" if ["Volume"](x) <= 0.48 else "plt")
         #new column and conversion to one line which is printable
-        df2_orig["len_Wi_Hei_Wei"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/', axis=1)
+        df2_orig["len_Wi_Hei_Wei"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/', axis=1) + df2.apply(lambda x: f'{x["Packing"]}',axis=1 )
         df2_orig["len_Wi_Hei_Wei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
-        print("file saved")
+        print("file saved as Vol2.xlsx")
         
 
 print("That´s all folks, bye")
