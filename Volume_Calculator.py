@@ -69,6 +69,14 @@ df2 = pd.DataFrame(named_columns_w_weight)
 
 # Definition for customs func.
 def format_values(value):
+    """Formating values in a way that will replace entries of "," with ".". Also let you repair input if it was used as wrong type
+
+    Args:
+        value (not_specified): User input which than is evaulated and ideally transfered to float
+
+    Returns:
+        value: Return formated value of the entry input
+    """
     try:
         value = float(value)
         return value
@@ -88,6 +96,15 @@ def format_values(value):
                     continue
 
 def Repair_table(used_df, repair_it):
+    """Repair function which will specify the dimensions of the matrix and then rewrite it´s value
+
+    Args:
+        used_df (pandas.core.frame.DataFrame): used dataframe to repair within
+        repair_it (str): string of responses 
+
+    Returns:
+        _type_: _description_
+    """
     if repair_it.lower() in response:
         print("\n\n\n------------Actual REPAIRED table ----------")
         print(used_df)
@@ -162,6 +179,14 @@ if weight_inp not in response:
     print(df)
     
 def add_packing(row):
+    """Function which will evaulate wheter is the dimensions provided suitable more for pallet or carton
+
+    Args:
+        row (row): each row of the df
+
+    Returns:
+        str: what kind of string to apply to Packing column as output
+    """
     if (row["Length [1]"] >= 80 and row["Width [2]"] >= 60) or (row["Length [1]"] >= 60 and row["Width [2]"] >= 80):
         return "plt"
     else:
@@ -207,10 +232,7 @@ if save_it_2.lower() in response:
         df_orig["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
         print("file saved as Vol2.xlsx")
     else:
-        print(df2_orig.columns)
-        print(df2.columns)
         df2_orig = df2_orig.applymap(lambda x: int(x) if type(x) == float and x == round(x) else x)
-        
         #new column and conversion to one line which is printable
         df2_orig["len_Wi_Hei_Wei"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/', axis=1) 
         df2["Packing"] = df2.apply(lambda x: f'{x["Packing"]}',axis=1 )
