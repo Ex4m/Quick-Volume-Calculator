@@ -6,14 +6,9 @@ import winsound
 import random
 
 response = ["y","yes","yap","yeah",","]
-# TO DO LIST:
-# create logo in script - done
-# create audio on startup - done
-# fce for unit prediction when export for copy
-# break on keypress - modifyied and done
-#
 clip_loc_2 = "C:/Users/Exa/Documents/GitHub/Quick-Volume-CalculatorMotley-Crue-Kickstart-my-Heart_logo"
 clip_loc = "C:/Users/Exa/Downloads/Motley-Crue-Kickstart-my-Heart_logo"
+ 
  
 #Starting loading screen
 ran_list = ["Fetching up the final numbers for you !","Go ahead -- hold your breath!","Please wait while the little elves draw your map",
@@ -25,6 +20,11 @@ pick_second = random.choice(ran_list)
 
 
 def start_seq(skip):
+    """Starting seq which is showing the logo and some cool music to enhace and motivate for quick calculation :)
+
+    Args:
+        skip (str): Bool - response on user input defined in response
+    """
     if not skip:
         winsound.PlaySound(clip_loc, winsound.SND_ASYNC)   
         print(pick_one)
@@ -33,13 +33,13 @@ def start_seq(skip):
         time.sleep(5)                                                                                                                                                                                                                                                                    
         lg.print_logo(0.07) 
     elif skip:
-        print("So, my hard work on logo is not cool for you Ha? :) ")
+        print("So, my hard work on a fancy logo is not enough for you Ha? :) \n")
     
 skip = input("Do you want to skip the logo? y/n: ")      
 start_seq(skip)
 
 
-print("\033[1mEx4m v. 1.3\033[0m\n\n")
+print("\033[1mEx4m v. 1.4\033[0m\n\n")
                                                                                                                                                      
 print( """Hi,
 This is \033[1m Quick Volume Calculator\033[0m and this should work as helptool for creating a quick sheets of data used for example in logistics with various outputs.
@@ -162,7 +162,7 @@ if weight_inp not in response:
     print(df)
     
 def add_packing(row):
-    if row["Length [1]"] >= 80 and row["Width [2]"] >= 60:
+    if (row["Length [1]"] >= 80 and row["Width [2]"] >= 60) or (row["Length [1]"] >= 60 and row["Width [2]"] >= 80):
         return "plt"
     else:
         return "ctn"
@@ -207,11 +207,16 @@ if save_it_2.lower() in response:
         df_orig["len_Wi_Hei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
         print("file saved as Vol2.xlsx")
     else:
+        print(df2_orig.columns)
+        print(df2.columns)
         df2_orig = df2_orig.applymap(lambda x: int(x) if type(x) == float and x == round(x) else x)
-        #unit = df2.applymap(lambda x: "ctn" if ["Volume"](x) <= 0.48 else "plt")
+        
         #new column and conversion to one line which is printable
-        df2_orig["len_Wi_Hei_Wei"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/', axis=1) + df2.apply(lambda x: f'{x["Packing"]}',axis=1 )
-        df2_orig["len_Wi_Hei_Wei"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
+        df2_orig["len_Wi_Hei_Wei"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/', axis=1) 
+        df2["Packing"] = df2.apply(lambda x: f'{x["Packing"]}',axis=1 )
+        df2_orig = df2_orig.assign(Packing=df2["Packing"])
+        df2_orig["len_Wi_Hei_Wei_Pack"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/{x["Packing"]}', axis=1)
+        df2_orig["len_Wi_Hei_Wei_Pack"].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
         print("file saved as Vol2.xlsx")
         
 
