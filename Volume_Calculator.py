@@ -238,9 +238,10 @@ if save_it_2.lower() in response:
         df2["Packing"] = df2.apply(lambda x: f'{x["Packing"]}',axis=1 )
         df2_orig = df2_orig.assign(Packing=df2["Packing"], blank1=["----"]* len(df2_orig), blank2=["----"]* len(df2_orig), Volume=df2["Volume"], Weight=df2["Weight [4]"])
         df2_orig["len_Wi_Hei_Wei_Pack"] = df2_orig.apply(lambda x: f'{x["Quantity [0]"]}x  {x["Length [1]"]}x{x["Width [2]"]}x{x["Height [3]"]} cm  {x["Weight [4]"]} kg/{x["Packing"]}', axis=1)
-        cols_for_sum =["Volume","Weight [4]"]
+        df2_orig["Total Weight"] = df2_orig["Quantity [0]"] * df2_orig["Weight [4]"]
+        cols_for_sum =["Volume","Total Weight"]
         total = df2_orig.loc["TOTAL"] = df2_orig[cols_for_sum].sum(numeric_only= True, axis = 0, skipna = True)
-        df2_orig[["Volume","Weight [4]","----","----","len_Wi_Hei_Wei_Pack"]].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
+        df2_orig[["Volume","Total Weight","----","----","len_Wi_Hei_Wei_Pack"]].to_excel("vol2.xlsx", index=False, sheet_name='Sheet1', header=True)
         print("file saved as Vol2.xlsx")
         
 
