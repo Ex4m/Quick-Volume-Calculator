@@ -66,7 +66,7 @@ named_columns_w_weight = {"Quantity [0]": quant,
 df = pd.DataFrame(named_columns)
 df2 = pd.DataFrame(named_columns_w_weight)
 
-filter()
+
 # Definition for customs func.
 def format_values(value):
     """Formating values in a way that will replace entries of "," with ".". Also let you repair input if it was used as wrong type
