@@ -19,24 +19,25 @@ ran_list.remove(pick_one)
 pick_second = random.choice(ran_list)
 
 
-def start_seq(skip):
+def start_seq():
     """Starting seq which is showing the logo and some cool music to enhace and motivate for quick calculation :)
 
     Args:
         skip (str): Bool - response on user input defined in response
     """
-    if not skip:
+    skip = input("Do you want to skip the main logo? y/n: ")    
+    if skip not in response:
         winsound.PlaySound(clip_loc, winsound.SND_ASYNC)   
         print(pick_one)
         time.sleep(5)
         print(pick_second)  
         time.sleep(5)                                                                                                                                                                                                                                                                    
         lg.print_logo(0.07) 
-    elif skip:
+    else:
         print("So, my hard work on a fancy logo is not enough for you Ha? :) \n")
     
-skip = input("Do you want to skip the logo? y/n: ")      
-start_seq(skip)
+  
+start_seq()
 
 
 print("\033[1mEx4m v. 1.4\033[0m\n\n")
